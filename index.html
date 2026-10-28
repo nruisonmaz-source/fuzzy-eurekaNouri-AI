@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10122d">
+<title>Nouri AI | نوری</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(145deg,#10122d,#24134b,#102b58);color:white;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:16px}
+.app{width:100%;max-width:480px;background:#171a38;border:1px solid #5554a0;border-radius:24px;padding:22px;box-shadow:0 0 35px #6950ff44}
+h1{text-align:center;color:#b9a5ff;margin:8px}
+.sub{text-align:center;color:#c7c9ef;font-size:14px}
+#chat{height:310px;overflow:auto;padding:12px 0}
+.msg{padding:12px;margin:9px 0;border-radius:14px;line-height:1.8;overflow-wrap:anywhere}
+.bot{background:#292653}
+.user{background:#373c77}
+.controls{display:flex;gap:8px}
+input{min-width:0;flex:1;background:#10132c;color:white;border:1px solid #6964a5;border-radius:12px;padding:13px;font-size:16px}
+button{border:0;border-radius:12px;padding:12px;color:white;background:#7055e8;font-size:15px;cursor:pointer}
+.actions{display:flex;gap:8px;margin-top:10px}
+.actions button{flex:1;background:#343565}
+small{display:block;text-align:center;color:#c6c5e8;margin-top:16px}
+</style>
+</head>
+<body>
+<main class="app">
+<h1>💙 نوری AI 💜</h1>
+<p class="sub">همدم مهربان تو، دستیار هوشمند تو</p>
+<div id="chat" aria-live="polite">
+<div class="msg bot">سلام دوست عزیز! 🌷 من نوری هستم. چه کمکی از دستم برمی‌آید؟</div>
+</div>
+<form id="form" class="controls">
+<input id="question" placeholder="پیامت را بنویس..." autocomplete="off" required>
+<button type="submit">ارسال</button>
+</form>
+<div class="actions">
+<button id="voice">🎤 صحبت کن</button>
+<button id="read">🔊 خواندن پاسخ</button>
+</div>
+<small>نوری AI — همیشه آمادهٔ کمک</small>
+</main>
+<script>
+const chat=document.getElementById('chat');
+const input=document.getElementById('question');
+let lastAnswer='سلام دوست عزیز! من نوری هستم.';
+function add(text,who){
+const d=document.createElement('div');
+d.className='msg '+who;
+d.textContent=text;
+chat.appendChild(d);
+chat.scrollTop=chat.scrollHeight;
+}
+document.getElementById('form').addEventListener('submit',e=>{
+e.preventDefault();
+const q=input.value.trim();
+if(!q)return;
+add(q,'user');
+input.value='';
+lastAnswer='پیامت را دریافت کردم! 😊 برای پاسخ هوشمند به پرسش‌هایم، باید در مرحلهٔ بعد سرویس هوش مصنوعی را وصل کنیم. فعلاً می‌توانیم ظاهر و امکانات اولیهٔ نوری را آماده کنیم.';
+add(lastAnswer,'bot');
+});
+document.getElementById('read').onclick=()=>{
+if('speechSynthesis' in window){
+speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(lastAnswer);
+u.lang='fa-IR';
+speechSynthesis.speak(u);
+}else alert('خواندن صدا در این مرورگر پشتیبانی نمی‌شود.');
+};
+document.getElementById('voice').onclick=()=>{
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR){alert('تشخیص صدا در این مرورگر پشتیبانی نمی‌شود. می‌توانی پیام را تایپ کنی.');return;}
+const r=new SR();
+r.lang='fa-IR';
+r.onresult=e=>{input.value=e.results[0][0].transcript;};
+r.onerror=()=>alert('میکروفون فعال نشد. اجازهٔ دسترسی میکروفون را بررسی کن.');
+r.start();
+};
+</script>
+</body>
+</html>
